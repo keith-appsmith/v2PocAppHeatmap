@@ -1,0 +1,5 @@
+TicketID,Product,Region,Agent,Team,CreatedAt,Subject,Description
+1,WidgetA,US,alice,Support,2024-05-01,"Unable to login","User cannot log into account using email and password." 
+2,WidgetB,EU,bob,Support,2024-05-02,"Payment issue","Customer's payment was declined despite valid card." 
+3,WidgetA,US,charlie,Support,2024-05-03,"Feature request","Customer wants dark mode for the dashboard interface." 
+4,WidgetC,APAC,alice,Support,2024-05-04,"Bug report","Application crashes when uploading file larger than 5MB." 

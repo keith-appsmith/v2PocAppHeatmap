@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Support Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    table {border-collapse: collapse; width: 100%;}
+    th, td {border: 1px solid #ccc; padding: 4px;}
+    tr.unmatched {background-color: #fdd;}
+  </style>
+</head>
+<body>
+<h1>Support Tickets</h1>
+<form method="get">
+  Product: <input name="product" value="{{ params.get('product','') }}">
+  Region: <input name="region" value="{{ params.get('region','') }}">
+  Agent: <input name="agent" value="{{ params.get('agent','') }}">
+  Team: <input name="team" value="{{ params.get('team','') }}">
+  Start: <input type="date" name="start" value="{{ params.get('start','') }}">
+  End: <input type="date" name="end" value="{{ params.get('end','') }}">
+  <button type="submit">Filter</button>
+  <a href="{{ url_for('export_csv', **params) }}">Export CSV</a>
+</form>
+
+<table>
+  <tr>
+    <th>ID</th><th>Product</th><th>Region</th><th>Agent</th><th>Team</th><th>Date</th><th>Subject</th><th>Summary</th><th>Tags</th><th>Articles</th>
+  </tr>
+  {% for t in tickets %}
+  <tr class="{% if not t.MatchedArticles %}unmatched{% endif %}">
+    <td>{{ t.TicketID }}</td>
+    <td>{{ t.Product }}</td>
+    <td>{{ t.Region }}</td>
+    <td>{{ t.Agent }}</td>
+    <td>{{ t.Team }}</td>
+    <td>{{ t.CreatedAt.strftime('%Y-%m-%d') }}</td>
+    <td>{{ t.Subject }}</td>
+    <td>{{ t.Summary }}</td>
+    <td>{{ ', '.join(t.Tags) }}</td>
+    <td>{% for a in t.MatchedArticles %}{{ a.Title }}<br>{% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>Tag Frequency</h2>
+<canvas id="tagChart" width="600" height="300"></canvas>
+<script>
+  const ctx = document.getElementById('tagChart').getContext('2d');
+  const data = {
+    labels: {{ stats.keys() | list }},
+    datasets: [{
+      label: 'Tickets per Tag',
+      data: {{ stats.values() | list }},
+      backgroundColor: 'rgba(54, 162, 235, 0.5)'
+    }]
+  };
+  new Chart(ctx, {type:'bar', data:data});
+</script>
+</body>
+</html>
